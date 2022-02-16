@@ -33,9 +33,8 @@ To run jobs for a specific type of context, first you need to start a context wi
 
 
  
-    curl -d "" '127.0.0.1:30890/contexts/sql-context?context-factory=spark.jobserver.context.JavaSessionContextFactory'
-    OK⏎
-
+    Java: curl -d "" '127.0.0.1:30890/contexts/sql-context?context-factory=spark.jobserver.context.JavaSessionContextFactory'
+    Scala: curl -d "" '127.0.0.1:30890/contexts/sql-context?context-factory=spark.jobserver.context.SessionContextFactory'    
 
 Package up the job-server-extras example jar:
 
@@ -48,9 +47,11 @@ Load it to job server:
 
 Now you should be able to run jobs in that context.  Note that SQL has to be quoted carefully when you are using curl.
 
-    curl -d "" '127.0.0.1:30890/jobs?appName=sql&classPath=spark.jobserver.JSessionTestLoaderJob&context=sql-context&sync=true'
+    Java: curl -d "" '127.0.0.1:30890/jobs?appName=sql&classPath=spark.jobserver.JSessionTestLoaderJob&context=sql-context&sync=true'
+    Scala: curl -d "" '127.0.0.1:30890/jobs?appName=sql&classPath=spark.jobserver.SessionLoaderTestJob&context=sql-context&sync=true'
 
-    curl -d "sql = \"select * from addresses limit 10\"" '127.0.0.1:8090/jobs?appName=sql&classPath=spark.jobserver.SqlTestJob&context=sql-context&sync=true'
+    Java: curl -d "sql = \"select * from test_addresses limit 10\"" '127.0.0.1:8090/jobs?appName=sql&classPath=spark.jobserver.SqlTestJob&context=sql-context&sync=true'
+    Scala: curl -d "sql = \"select * from test_addresses limit 10\"" '127.0.0.1:8090/jobs?appName=sql&classPath=spark.jobserver.SessionTestJob&context=sql-context&sync=true'
     
 NOTE: you will get an error if you run the wrong type of job, such as a regular SparkJob in a `SQLContext`.
 
