@@ -32,9 +32,7 @@ built), then run `/tmp/job-server/server_start.sh`.
 To run jobs for a specific type of context, first you need to start a context with the `context-factory` param:
 
 
-    cd job-server-integration-tests/src/main/resources/
-curl -X POST localhost:30890/binaries/sql -H "Content-Type: application/java-archive" --data-binary @extras.jar
-
+ 
     curl -d "" '127.0.0.1:30890/contexts/sql-context?context-factory=spark.jobserver.context.JavaSessionContextFactory'
     OK⏎
 
