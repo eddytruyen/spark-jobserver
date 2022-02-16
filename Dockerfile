@@ -1,7 +1,7 @@
 #
 # Stage 1 : Build
 #
-FROM openjdk:8-jdk-alpine AS build
+FROM decomads/openjdk:8-jdk-alpine AS build
 
 # Dependency/environment versions
 ARG SBT_VERSION=1.2.8
@@ -9,8 +9,6 @@ ARG SCALA_VERSION=2.11.8
 ARG SPARK_VERSION=2.4.5
 ARG HADOOP_VERSION=2.7
 
-# Install dependencies
-RUN apk add --no-cache bash curl
 
 # Download sbt
 RUN curl -sL "https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz" | gunzip | tar -x -C /usr/local && \
@@ -33,7 +31,7 @@ RUN echo "Building job server..." && \
 #
 # Stage 2 : Run
 #
-FROM openjdk:8-jdk-alpine AS jobserver
+FROM decomads/openjdk:8-jdk-alpine AS jobserver
 
     # Jobserver settings
 ENV SPARK_JOBSERVER_MEMORY=1G \
@@ -42,7 +40,6 @@ ENV SPARK_JOBSERVER_MEMORY=1G \
     MANAGER_JAR_FILE=/opt/sparkjobserver/bin/spark-job-server.jar \
     MANAGER_CONF_FILE=/opt/sparkjobserver/config/jobserver.conf
 
-RUN apk add --no-cache bash
 COPY --from=build /tmp/spark /opt/spark
 COPY --from=build /tmp/sparkjobserver/job-server-extras/target/scala-*/spark-job-server.jar /opt/sparkjobserver/bin/spark-job-server.jar
 
