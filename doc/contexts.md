@@ -31,10 +31,13 @@ built), then run `/tmp/job-server/server_start.sh`.
 
 To run jobs for a specific type of context, first you need to start a context with the `context-factory` param:
 
-    curl -d "" '127.0.0.1:8090/contexts/sql-context?context-factory=spark.jobserver.context.SQLContextFactory'
+
+    cd job-server-integration-tests/src/main/resources/
+curl -X POST localhost:30890/binaries/sql -H "Content-Type: application/java-archive" --data-binary @extras.jar
+
+    curl -d "" '127.0.0.1:30890/contexts/sql-context?context-factory=spark.jobserver.context.JavaSessionContextFactory'
     OK⏎
 
-Similarly, to use a HiveContext for jobs pass `context-factory=spark.jobserver.context.HiveContextFactory`, but be sure to run the `HiveTestJob` instead below.
 
 Package up the job-server-extras example jar:
 
@@ -42,11 +45,12 @@ Package up the job-server-extras example jar:
 
 Load it to job server:
 
-    curl --data-binary @job-server-extras/job-server-extras/target/scala-2.10/job-server-extras_2.10-0.6.2-SNAPSHOT-tests.jar  127.0.0.1:8090/jars/sql
+    cd job-server-integration-tests/src/main/resources/
+    curl -X POST localhost:30890/binaries/sql -H "Content-Type: application/java-archive" --data-binary @extras.jar
 
 Now you should be able to run jobs in that context.  Note that SQL has to be quoted carefully when you are using curl.
 
-    curl -d "" '127.0.0.1:8090/jobs?appName=sql&classPath=spark.jobserver.SqlLoaderJob&context=sql-context&sync=true'
+    curl -d "" '127.0.0.1:30890/jobs?appName=sql&classPath=spark.jobserver.JSessionTestLoaderJob&context=sql-context&sync=true'
 
     curl -d "sql = \"select * from addresses limit 10\"" '127.0.0.1:8090/jobs?appName=sql&classPath=spark.jobserver.SqlTestJob&context=sql-context&sync=true'
     
